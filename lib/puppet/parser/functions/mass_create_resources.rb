@@ -48,9 +48,8 @@ module Puppet::Parser::Functions
 
           if not final_resources.has_key?(hiera_type)
             final_resources[hiera_type] = Hash.new
-          elsif name.is_a?(String) and final_resources[hiera_type].has_key?(name)
-            function_fail(["Attempt to redefine '#{hiera_type}' resource: '#{name}'"])
-          elsif name.is_a?(Array) and name.all? { |n| not final_resources[hiera_type].has_key?(n) }
+          elsif name.is_a?(String) and final_resources[hiera_type].has_key?(name) \
+            or name.is_a?(Array) and name.all? { |n| not final_resources[hiera_type].has_key?(n) }
             function_fail(["Attempt to redefine '#{hiera_type}' resource: '#{name}'"])
           end
 
@@ -58,7 +57,7 @@ module Puppet::Parser::Functions
             final_resources[hiera_type][name] = value
           elsif name.is_a?(Array)
             name.each do |n|
-              final_resources[hiera_type][name] = value
+              final_resources[hiera_type][n] = value
             end
           else
             fail("Error resource names mest be a string or array not: '#{name.class}'")
@@ -69,11 +68,11 @@ module Puppet::Parser::Functions
 
     final_resources.each do |hiera_type,values|
       defaults = false
-      if values.has_key?('hiera_defaults')
-        defaults = values['hiera_defaults']
-        values.delete['hiera_defaults']
-      end
       unless values.empty?
+        if values.has_key?('hiera_defaults')
+          defaults = values['hiera_defaults']
+          values.delete['hiera_defaults']
+        end
         function_create_resources([
           hiera_type, values,
           ((hiera_type != 'class') and defaults) ? defaults : {}
