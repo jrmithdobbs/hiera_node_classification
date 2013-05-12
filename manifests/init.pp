@@ -11,7 +11,7 @@ class hiera_node_classification(
   mass_create_resources($resources)
 
   # This is mostly for debugging but could be extended for a ghetto caching impl
-  file { "${::puppet_vardir}/state/hiera_classifier_state-${::clientcert}.json":
+  file { "${::puppet_vardir}/state/hiera_node_classification-state-${::clientcert}.json":
     ensure  => file,
     owner   => 'root',
     mode    => '0440',
