@@ -17,7 +17,7 @@ class hiera_node_classification(
     mode    => '0440',
     content =>
       inline_template(
-        "<%= scope.lookupvar('hiera_classifier::resources').to_json -%>"
+        "<%= scope.lookupvar('::hiera_node_classification::resources').to_json -%>"
       ),
   }
 }
